@@ -112,5 +112,3 @@ redplay/
 ## Kontribusi
 Kontribusi terbuka. Silakan fork repository dan buat pull request.
 
-## Lisensi
-Project ini menggunakan lisensi MIT.
