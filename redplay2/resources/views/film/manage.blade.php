@@ -193,8 +193,8 @@ td { padding:.9rem 1.2rem; font-size:.88rem; vertical-align:middle; }
             <td class="td-rating">{{ $film->rating ? ' '.$film->rating : '' }}</td>
             <td style="color:rgba(255,255,255,.5);">{{ $film->tahun ? \Carbon\Carbon::parse($film->tahun)->year : '' }}</td>
             <td>
-              <div class="action-btns">
-                <button class="btn-edit" onclick="openEdit({{ $film->id_film }})"> Edit</button>
+             <div class="action-btns">
+                <a href="{{ route('films.edit', $film->id_film) }}" class="btn-edit" style="text-decoration:none; display:inline-block;"> Edit</a>
                 <form action="{{ route('films.destroy', $film->id_film) }}" method="POST" onsubmit="return confirm('Hapus film ini?')">
                   @csrf @method('DELETE')
                   <button type="submit" class="btn-del"> Hapus</button>
