@@ -24,6 +24,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/films/manage', [FilmController::class, 'manage'])->name('films.manage');
     Route::get('/films/create', [FilmController::class, 'create'])->name('films.create');
     Route::post('/films/store', [FilmController::class, 'store'])->name('films.store');
+    Route::get('/films/{id}/edit', [FilmController::class, 'edit'])->name('films.edit');
     Route::delete('/films/{id}', [FilmController::class, 'destroy'])->name('films.destroy');
     Route::put('/films/{id}', [FilmController::class, 'update'])->name('films.update');
 

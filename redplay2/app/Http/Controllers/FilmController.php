@@ -168,6 +168,20 @@ class FilmController extends Controller
     }
 
     /**
+     * ADMIN: Show edit film form
+     */
+    public function edit($id)
+    {
+        if (!Auth::check() || Auth::user()->role !== 'admin') abort(403);
+
+        $film = Film::with(['genres', 'actors'])->findOrFail($id);
+        $genres = Genre::orderBy('genre')->get();
+        $actors = Actor::orderBy('namaaktor')->get();
+
+        return view('film.edit', compact('film', 'genres', 'actors'));
+    }
+
+    /**
      * ADMIN: Update film
      */
     public function update(Request $request, $id)
