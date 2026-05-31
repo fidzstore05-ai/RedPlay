@@ -4,62 +4,84 @@ namespace App\Http\Controllers;
 
 use App\Models\Genre;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class GenreController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * ADMIN: Manage genres list
      */
-    public function index()
+    public function manage(Request $request)
     {
-        //
+        if (!Auth::check() || Auth::user()->role !== 'admin') {
+            return redirect('/')->with('error', 'Akses ditolak.');
+        }
+
+        $genres = Genre::withCount('films')->orderBy('genre')->paginate(15);
+        return view('genre.manage', compact('genres'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * ADMIN: Show create genre form
      */
     public function create()
     {
-        //
+        if (!Auth::check() || Auth::user()->role !== 'admin') abort(403);
+        return view('genre.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * ADMIN: Store new genre
      */
     public function store(Request $request)
     {
-        //
+        if (!Auth::check() || Auth::user()->role !== 'admin') abort(403);
+
+        $data = $request->validate([
+            'genre' => 'required|string|max:255|unique:genres,genre',
+        ]);
+
+        Genre::create($data);
+
+        return redirect()->route('genres.manage')->with('success', 'Genre berhasil ditambahkan.');
     }
 
     /**
-     * Display the specified resource.
+     * ADMIN: Show edit genre form
      */
-    public function show(Genre $genre)
+    public function edit($id)
     {
-        //
+        if (!Auth::check() || Auth::user()->role !== 'admin') abort(403);
+
+        $genre = Genre::findOrFail($id);
+        return view('genre.edit', compact('genre'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * ADMIN: Update genre
      */
-    public function edit(Genre $genre)
+    public function update(Request $request, $id)
     {
-        //
+        if (!Auth::check() || Auth::user()->role !== 'admin') abort(403);
+
+        $genre = Genre::findOrFail($id);
+        $data = $request->validate([
+            'genre' => 'required|string|max:255|unique:genres,genre,' . $id . ',id_genre',
+        ]);
+
+        $genre->update($data);
+
+        return redirect()->route('genres.manage')->with('success', 'Genre berhasil diupdate.');
     }
 
     /**
-     * Update the specified resource in storage.
+     * ADMIN: Delete genre
      */
-    public function update(Request $request, Genre $genre)
+    public function destroy($id)
     {
-        //
-    }
+        if (!Auth::check() || Auth::user()->role !== 'admin') abort(403);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Genre $genre)
-    {
-        //
+        Genre::destroy($id);
+        return redirect()->route('genres.manage')->with('success', 'Genre berhasil dihapus.');
     }
 }

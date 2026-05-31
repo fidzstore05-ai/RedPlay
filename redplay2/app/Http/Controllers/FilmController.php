@@ -74,6 +74,11 @@ class FilmController extends Controller
      */
     public function watch($id)
     {
+        if (!Auth::check()) {
+            session(['url.intended' => url()->current()]);
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu untuk menonton film.');
+        }
+
         $film = Film::with(['genres', 'actors', 'comments.user', 'comments.likes'])->findOrFail($id);
 
         $genreIds = $film->genres->pluck('id_genre')->toArray();
@@ -154,11 +159,27 @@ class FilmController extends Controller
             'tahun'      => 'nullable|date',
             'rating'     => 'nullable|numeric|min:0|max:10',
             'thumbnail'  => 'nullable|string',
+            'thumbnail_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'video'      => 'nullable|string',
+            'video_file' => 'nullable|mimes:mp4,mkv,avi,webm,mov|max:102400',
             'subtitle'   => 'nullable|string',
             'sutradara'  => 'nullable|string|max:255',
             'durasi'     => 'nullable|string|max:100',
         ]);
+
+        if ($request->hasFile('thumbnail_file')) {
+            $file = $request->file('thumbnail_file');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/posters'), $filename);
+            $data['thumbnail'] = 'uploads/posters/' . $filename;
+        }
+
+        if ($request->hasFile('video_file')) {
+            $file = $request->file('video_file');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/videos'), $filename);
+            $data['video'] = 'uploads/videos/' . $filename;
+        }
 
         $film = Film::create($data);
         $film->genres()->sync($request->input('genres', []));
@@ -195,11 +216,27 @@ class FilmController extends Controller
             'tahun'      => 'nullable|date',
             'rating'     => 'nullable|numeric|min:0|max:10',
             'thumbnail'  => 'nullable|string',
+            'thumbnail_file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'video'      => 'nullable|string',
+            'video_file' => 'nullable|mimes:mp4,mkv,avi,webm,mov|max:102400',
             'subtitle'   => 'nullable|string',
             'sutradara'  => 'nullable|string|max:255',
             'durasi'     => 'nullable|string|max:100',
         ]);
+
+        if ($request->hasFile('thumbnail_file')) {
+            $file = $request->file('thumbnail_file');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/posters'), $filename);
+            $data['thumbnail'] = 'uploads/posters/' . $filename;
+        }
+
+        if ($request->hasFile('video_file')) {
+            $file = $request->file('video_file');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/videos'), $filename);
+            $data['video'] = 'uploads/videos/' . $filename;
+        }
 
         $film->update($data);
         $film->genres()->sync($request->input('genres', []));
