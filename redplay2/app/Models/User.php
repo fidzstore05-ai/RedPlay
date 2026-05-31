@@ -11,11 +11,12 @@ class User extends Authenticatable
     public $timestamps = false;
 
     protected $fillable = [
-        'nama',  
+        'nama',
         'email',
         'password',
         'role'
     ];
+
 
     public function comments()
     {
