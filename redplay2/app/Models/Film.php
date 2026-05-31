@@ -22,6 +22,30 @@ class Film extends Model
         'durasi',
     ];
 
+    /**
+     * Get resolved URL for the film thumbnail (poster).
+     */
+    public function getThumbnailUrlAttribute()
+    {
+        $value = $this->thumbnail;
+        if (!$value) {
+            return null;
+        }
+
+        if (filter_var($value, FILTER_VALIDATE_URL)) {
+            if (str_contains($value, 'drive.google.com')) {
+                if (preg_match('/\/d\/([a-zA-Z0-9_-]+)/', $value, $matches)) {
+                    return 'https://lh3.googleusercontent.com/d/' . $matches[1];
+                } elseif (preg_match('/[?&]id=([a-zA-Z0-9_-]+)/', $value, $matches)) {
+                    return 'https://lh3.googleusercontent.com/d/' . $matches[1];
+                }
+            }
+            return $value;
+        }
+
+        return asset($value);
+    }
+
     // Relasi ke Genre (many to many)
     public function genres()
     {
