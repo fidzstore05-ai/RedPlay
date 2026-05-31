@@ -62,7 +62,7 @@
 .preview-genre-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.8rem}
 .preview-genre-badge{background:rgba(229,9,20,.15);border:1px solid rgba(229,9,20,.3);color:#ff6b6b;padding:.2rem .7rem;border-radius:20px;font-size:.75rem;font-weight:600}
 .preview-rating-badge{background:rgba(245,197,24,.15);border:1px solid rgba(245,197,24,.3);color:#f5c518;padding:.2rem .7rem;border-radius:20px;font-size:.75rem;font-weight:700}
-.preview-desc{font-size:.85rem;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:1rem}
+.preview-desc{font-size:.85rem;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:1rem;white-space:pre-line}
 .preview-meta{font-size:.82rem;color:rgba(255,255,255,.5);margin-bottom:.3rem}
 .preview-meta span{color:rgba(255,255,255,.8)}
 .preview-actions{display:flex;gap:.6rem;padding:0 1.5rem 1.5rem}
@@ -465,10 +465,23 @@ function previewPoster(input) {
   };
   reader.readAsDataURL(input.files[0]);
 }
+function convertDriveThumbnailUrl(url) {
+  if (url && url.includes('drive.google.com')) {
+    let driveId = '';
+    const m1 = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    const m2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (m1) driveId = m1[1];
+    else if (m2) driveId = m2[1];
+    if (driveId) {
+      return 'https://lh3.googleusercontent.com/d/' + driveId;
+    }
+  }
+  return url;
+}
 document.getElementById('inp_thumbnail').addEventListener('input', function() {
   const url = this.value.trim();
   const img = document.getElementById('previewPosterImg');
-  if (url) { img.src = url; img.classList.add('show'); }
+  if (url) { img.src = convertDriveThumbnailUrl(url); img.classList.add('show'); }
   else { img.classList.remove('show'); }
 });
 
@@ -490,8 +503,13 @@ document.getElementById('inp_video').addEventListener('input', function() {
     const m = url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
     if (m) showVideoPreview('iframe', 'https://www.youtube.com/embed/' + m[1]);
   } else if (url.includes('drive.google.com')) {
-    const m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if (m) showVideoPreview('iframe', 'https://drive.google.com/file/d/' + m[1] + '/preview');
+    let driveId = '';
+    const m1 = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    const m2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (m1) driveId = m1[1];
+    else if (m2) driveId = m2[1];
+    if (driveId) showVideoPreview('iframe', 'https://drive.google.com/file/d/' + driveId + '/preview');
+    else hideVideoPreview();
   } else {
     showVideoPreview('file', url);
   }
@@ -524,201 +542,6 @@ function resetForm() {
   document.getElementById('previewPosterImg').classList.remove('show');
   hideVideoPreview();
   liveUpdate();
-}
-
-// Close dropdowns on outside click
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('#genreTagsInput') && !e.target.closest('#genreDropdown'))
-    document.getElementById('genreDropdown').classList.remove('open');
-  if (!e.target.closest('#actorTagsInput') && !e.target.closest('#actorDropdown'))
-    document.getElementById('actorDropdown').classList.remove('open');
-});
-</script>
-@endpush
-@push('scripts')
-<script>
-// ===== LIVE PREVIEW =====
-function liveUpdate() {
-  const judul = document.getElementById('inp_judul').value || 'Judul Film';
-  const desc  = document.getElementById('inp_deskripsi').value || 'Deskripsi film akan muncul di sini...';
-  const sut   = document.getElementById('inp_sutradara').value || '';
-  const dur   = document.getElementById('inp_durasi').value || '';
-  const rat   = document.getElementById('inp_rating').value;
-  const thn   = document.getElementById('inp_tahun').value;
-  document.getElementById('prev_title').textContent  = judul;
-  document.getElementById('prev_title2').textContent = judul;
-  document.getElementById('prev_desc').textContent   = desc;
-  document.getElementById('prev_sutradara').textContent = sut;
-  document.getElementById('prev_durasi').textContent = dur;
-  document.getElementById('prev_tahun').textContent  = thn ? new Date(thn).getFullYear() : '';
-  const genreRow = document.getElementById('prev_genre_row');
-  const existingRat = genreRow.querySelector('.preview-rating-badge');
-  if (existingRat) existingRat.remove();
-  if (rat) {
-    const rb = document.createElement('span');
-    rb.className = 'preview-rating-badge';
-    rb.textContent = ' ' + parseFloat(rat).toFixed(1);
-    genreRow.appendChild(rb);
-  }
-}
-['inp_judul','inp_deskripsi','inp_sutradara','inp_durasi','inp_rating','inp_tahun'].forEach(function(id) {
-  const el = document.getElementById(id);
-  if (el) el.addEventListener('input', liveUpdate);
-});
-
-// ===== GENRE MULTI-SELECT =====
-const selectedGenres = {};
-function toggleGenreDropdown() { document.getElementById('genreDropdown').classList.toggle('open'); }
-function toggleGenre(el) {
-  const id = el.dataset.id; const name = el.dataset.name;
-  if (selectedGenres[id]) { delete selectedGenres[id]; el.classList.remove('selected'); }
-  else { selectedGenres[id] = name; el.classList.add('selected'); }
-  renderGenreChips(); renderGenreInputs(); updateGenrePreview();
-}
-function renderGenreChips() {
-  const wrap = document.getElementById('genreChips');
-  const ph   = document.getElementById('genrePlaceholder');
-  wrap.innerHTML = '';
-  const keys = Object.keys(selectedGenres);
-  ph.style.display = keys.length ? 'none' : 'inline';
-  keys.forEach(function(id) {
-    const chip = document.createElement('span');
-    chip.className = 'genre-tag-chip';
-    chip.innerHTML = selectedGenres[id] + ' <button type="button" onclick="removeGenre('+id+')"></button>';
-    wrap.appendChild(chip);
-  });
-}
-function removeGenre(id) {
-  delete selectedGenres[id];
-  const opt = document.querySelector('#genreDropdown .genre-option[data-id="'+id+'"]');
-  if (opt) opt.classList.remove('selected');
-  renderGenreChips(); renderGenreInputs(); updateGenrePreview();
-}
-function renderGenreInputs() {
-  const wrap = document.getElementById('genreInputs'); wrap.innerHTML = '';
-  Object.keys(selectedGenres).forEach(function(id) {
-    const inp = document.createElement('input');
-    inp.type = 'hidden'; inp.name = 'genres[]'; inp.value = id;
-    wrap.appendChild(inp);
-  });
-}
-function updateGenrePreview() {
-  const overlay = document.getElementById('prev_genres_overlay');
-  const row     = document.getElementById('prev_genre_row');
-  overlay.innerHTML = ''; row.innerHTML = '';
-  const keys = Object.keys(selectedGenres);
-  if (!keys.length) { row.innerHTML = '<span style="font-size:.78rem;color:rgba(255,255,255,.25);">Belum ada genre</span>'; return; }
-  keys.forEach(function(id) {
-    const p1 = document.createElement('span'); p1.className = 'preview-genre-pill'; p1.textContent = selectedGenres[id]; overlay.appendChild(p1);
-    const p2 = document.createElement('span'); p2.className = 'preview-genre-badge'; p2.textContent = selectedGenres[id]; row.appendChild(p2);
-  });
-  const rat = document.getElementById('inp_rating').value;
-  if (rat) { const rb = document.createElement('span'); rb.className = 'preview-rating-badge'; rb.textContent = ' ' + parseFloat(rat).toFixed(1); row.appendChild(rb); }
-}
-
-// ===== ACTOR MULTI-SELECT =====
-const selectedActors = {};
-function toggleActorDropdown() { document.getElementById('actorDropdown').classList.toggle('open'); }
-function toggleActor(el) {
-  const id = el.dataset.id; const name = el.dataset.name;
-  if (selectedActors[id]) { delete selectedActors[id]; el.classList.remove('selected'); }
-  else { selectedActors[id] = name; el.classList.add('selected'); }
-  renderActorChips(); renderActorInputs(); updateActorPreview();
-}
-function renderActorChips() {
-  const wrap = document.getElementById('actorChips');
-  const ph   = document.getElementById('actorPlaceholder');
-  wrap.innerHTML = '';
-  const keys = Object.keys(selectedActors);
-  ph.style.display = keys.length ? 'none' : 'inline';
-  keys.forEach(function(id) {
-    const chip = document.createElement('span');
-    chip.className = 'genre-tag-chip';
-    chip.innerHTML = selectedActors[id] + ' <button type="button" onclick="removeActor('+id+')"></button>';
-    wrap.appendChild(chip);
-  });
-}
-function removeActor(id) {
-  delete selectedActors[id];
-  const opt = document.querySelector('#actorDropdown .genre-option[data-id="'+id+'"]');
-  if (opt) opt.classList.remove('selected');
-  renderActorChips(); renderActorInputs(); updateActorPreview();
-}
-function renderActorInputs() {
-  const wrap = document.getElementById('actorInputs'); wrap.innerHTML = '';
-  Object.keys(selectedActors).forEach(function(id) {
-    const inp = document.createElement('input');
-    inp.type = 'hidden'; inp.name = 'actors[]'; inp.value = id;
-    wrap.appendChild(inp);
-  });
-}
-function updateActorPreview() {
-  document.getElementById('prev_aktor').textContent = Object.values(selectedActors).join(', ') || '';
-}
-
-// ===== POSTER PREVIEW =====
-function previewPoster(input) {
-  if (!input.files || !input.files[0]) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const img = document.getElementById('previewPosterImg');
-    img.src = e.target.result; img.classList.add('show');
-    document.getElementById('inp_thumbnail').value = '';
-  };
-  reader.readAsDataURL(input.files[0]);
-}
-document.getElementById('inp_thumbnail').addEventListener('input', function() {
-  const url = this.value.trim();
-  const img = document.getElementById('previewPosterImg');
-  if (url) { img.src = url; img.classList.add('show'); }
-  else { img.classList.remove('show'); }
-});
-
-// ===== VIDEO PREVIEW =====
-function handleVideoFile(input) {
-  if (!input.files || !input.files[0]) return;
-  const file = input.files[0];
-  document.getElementById('videoFileName').textContent = file.name;
-  document.getElementById('videoFileSize').textContent = (file.size/1024/1024).toFixed(1) + ' MB';
-  document.getElementById('videoFileInfo').style.display = 'flex';
-  showVideoPreview('file', URL.createObjectURL(file));
-}
-document.getElementById('inp_video').addEventListener('input', function() {
-  const url = this.value.trim();
-  if (!url) { hideVideoPreview(); return; }
-  if (url.includes('youtube.com') || url.includes('youtu.be')) {
-    const m = url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-    if (m) showVideoPreview('iframe', 'https://www.youtube.com/embed/'+m[1]);
-  } else if (url.includes('drive.google.com')) {
-    const m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if (m) showVideoPreview('iframe', 'https://drive.google.com/file/d/'+m[1]+'/preview');
-  } else { showVideoPreview('file', url); }
-});
-function showVideoPreview(type, src) {
-  document.getElementById('videoPlaceholder').style.display = 'none';
-  if (type === 'iframe') {
-    document.getElementById('videoPreviewEl').style.display = 'none';
-    const f = document.getElementById('videoPreviewIframe'); f.src = src; f.style.display = 'block';
-  } else {
-    document.getElementById('videoPreviewIframe').style.display = 'none';
-    const v = document.getElementById('videoPreviewEl'); v.src = src; v.style.display = 'block';
-  }
-}
-function hideVideoPreview() {
-  document.getElementById('videoPlaceholder').style.display = 'flex';
-  document.getElementById('videoPreviewEl').style.display = 'none';
-  document.getElementById('videoPreviewIframe').style.display = 'none';
-}
-
-// ===== RESET =====
-function resetForm() {
-  Object.keys(selectedGenres).forEach(function(k){delete selectedGenres[k];});
-  Object.keys(selectedActors).forEach(function(k){delete selectedActors[k];});
-  renderGenreChips(); renderGenreInputs(); updateGenrePreview();
-  renderActorChips(); renderActorInputs(); updateActorPreview();
-  document.querySelectorAll('.genre-option').forEach(function(o){o.classList.remove('selected');});
-  document.getElementById('previewPosterImg').classList.remove('show');
-  hideVideoPreview(); liveUpdate();
 }
 
 // Close dropdowns on outside click
