@@ -421,8 +421,8 @@
     }
 
     .film-card:hover {
-        transform: translateY(-8px) scale(1.02);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        transform: translateY(-6px) scale(1.03);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.5);
         z-index: 2;
     }
 
@@ -888,7 +888,7 @@
     }
 
     .film-card, .genre-card, .featured-card {
-        animation: fadeInUp 0.5s ease-out both;
+        animation: fadeInUp 0.5s ease-out backwards;
     }
 
     .film-card:nth-child(1) { animation-delay: 0.05s; }
@@ -954,7 +954,7 @@
             <div class="film-card">
                 <a href="{{ route('films.show', $film->id_film) }}">
                     @if($film->thumbnail)
-                        <img src="{{ $film->thumbnail }}" alt="{{ $film->judul }}" class="film-poster" style="aspect-ratio:2/3;object-fit:cover;width:100%;display:block;">
+                        <img src="{{ $film->thumbnail_url }}" alt="{{ $film->judul }}" class="film-poster" style="aspect-ratio:2/3;object-fit:cover;width:100%;display:block;">
                     @else
                         <div class="film-poster-placeholder">🎬<span>{{ $film->judul }}</span></div>
                     @endif
@@ -1013,7 +1013,7 @@
         {{-- Ambient blurred background (updates via JS) --}}
         <div class="hero-ambient" id="hero-ambient"
             @if($heroFilms->first()->thumbnail)
-                style="background-image: url('{{ $heroFilms->first()->thumbnail }}')"
+                style="background-image: url('{{ $heroFilms->first()->thumbnail_url }}')"
             @endif
         ></div>
 
@@ -1030,10 +1030,10 @@
                 {{-- Poster on the RIGHT --}}
                 <div class="hero-poster-wrap">
                     @if($hFilm->thumbnail)
-                        <img src="{{ $hFilm->thumbnail }}"
+                        <img src="{{ $hFilm->thumbnail_url }}"
                              alt="{{ $hFilm->judul }}"
                              class="hero-poster-img"
-                             data-thumb="{{ $hFilm->thumbnail }}">
+                             data-thumb="{{ $hFilm->thumbnail_url }}">
                     @else
                         <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:8rem;background:linear-gradient(135deg,#1a1a2e,#0f3460);">🎬</div>
                     @endif
@@ -1064,10 +1064,17 @@
                     <p class="hero-desc">{{ $hFilm->deskripsi }}</p>
                     @endif
                     <div class="hero-actions">
-                        <a href="{{ route('films.watch', $hFilm->id_film) }}" class="btn-hero-play">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                            Play Now
-                        </a>
+                        @guest
+                            <a href="{{ route('films.watch', $hFilm->id_film) }}" class="btn-hero-play" style="gap: 0.4rem;">
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" style="margin-top: -2px;"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                                Play (Login)
+                            </a>
+                        @else
+                            <a href="{{ route('films.watch', $hFilm->id_film) }}" class="btn-hero-play">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                Play Now
+                            </a>
+                        @endguest
                         <a href="{{ route('films.show', $hFilm->id_film) }}" class="btn-hero-info">
                             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
                             More Info
@@ -1083,7 +1090,7 @@
         <div class="hero-dots">
             @foreach($heroFilms as $i => $hFilm)
                 <button class="hero-dot {{ $i === 0 ? 'active' : '' }}" data-slide="{{ $i }}"
-                    data-thumb="{{ $hFilm->thumbnail }}"></button>
+                    data-thumb="{{ $hFilm->thumbnail_url }}"></button>
             @endforeach
         </div>
     </div>
@@ -1112,7 +1119,7 @@
                 <div class="film-card">
                     <a href="{{ route('films.show', $film->id_film) }}">
                         @if($film->thumbnail)
-                            <img src="{{ $film->thumbnail }}" alt="{{ $film->judul }}" class="film-poster" style="aspect-ratio:2/3; object-fit:cover; width:100%; display:block;">
+                            <img src="{{ $film->thumbnail_url }}" alt="{{ $film->judul }}" class="film-poster" style="aspect-ratio:2/3; object-fit:cover; width:100%; display:block;">
                         @else
                             <div class="film-poster-placeholder">🎬<span>{{ $film->judul }}</span></div>
                         @endif
