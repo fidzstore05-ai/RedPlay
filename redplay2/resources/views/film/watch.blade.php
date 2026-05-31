@@ -105,6 +105,7 @@
         color: rgba(255,255,255,0.65);
         line-height: 1.8;
         margin-bottom: 1.5rem;
+        white-space: pre-line;
     }
 
     .film-desc.collapsed {
@@ -483,8 +484,13 @@
                     // Detect Google Drive
                     $isDrive = str_contains($videoUrl, 'drive.google.com');
                     if ($isDrive) {
-                        preg_match('/\/d\/([a-zA-Z0-9_-]+)/', $videoUrl, $dm);
-                        $driveId = $dm[1] ?? null;
+                        if (preg_match('/\/d\/([a-zA-Z0-9_-]+)/', $videoUrl, $dm)) {
+                            $driveId = $dm[1];
+                        } elseif (preg_match('/[?&]id=([a-zA-Z0-9_-]+)/', $videoUrl, $dm)) {
+                            $driveId = $dm[1];
+                        } else {
+                            $driveId = null;
+                        }
                     }
                 @endphp
 
@@ -497,7 +503,7 @@
                             allow="autoplay" allowfullscreen></iframe>
                 @else
                     <video controls autoplay>
-                        <source src="{{ $videoUrl }}" type="video/mp4">
+                        <source src="{{ Str::startsWith($videoUrl, ['http://', 'https://']) ? $videoUrl : asset($videoUrl) }}" type="video/mp4">
                         @if($film->subtitle)
                             <track kind="subtitles" src="{{ $film->subtitle }}" srclang="id" label="Indonesia" default>
                         @endif
@@ -527,6 +533,23 @@
                     <span>🗒 Subtitle tersedia</span>
                 @endif
             </div>
+
+            @if(isset($isDrive) && $isDrive && isset($driveId))
+                <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 1.2rem; margin: 1.5rem 0; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+                    <div style="font-size: 0.9rem; color: rgba(255,255,255,0.7); max-width: 500px; line-height: 1.5;">
+                        <strong style="color: #f5c518; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; font-size: 0.95rem;">
+                            <span>💡</span> Video Sedang Diproses / Belum Bisa Diputar?
+                        </strong>
+                        Jika Google Drive menampilkan pesan <em>"video is still being processed"</em>, itu berarti server Google sedang melakukan kompresi. Anda tetap bisa langsung menonton atau mendownload file asli lewat tombol di sebelah kanan.
+                    </div>
+                    <a href="https://drive.google.com/file/d/{{ $driveId }}/view" target="_blank" style="padding: 0.6rem 1.2rem; font-size: 0.85rem; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.6rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: white; font-weight: 600; transition: all 0.2s; cursor: pointer;" onmouseover="this.style.background='rgba(255,255,255,0.15)'; this.style.borderColor='rgba(255,255,255,0.3)';" onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.borderColor='rgba(255,255,255,0.15)';">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                        Buka / Download di Drive
+                    </a>
+                </div>
+            @endif
 
             @if($film->genres->isNotEmpty())
                 <div class="genre-tags">
@@ -625,7 +648,7 @@
             @forelse($recommendations as $rec)
                 <a href="{{ route('films.watch', $rec->id_film) }}" class="rec-card">
                     @if($rec->thumbnail)
-                        <img src="{{ $rec->thumbnail }}" alt="{{ $rec->judul }}" class="rec-thumb">
+                        <img src="{{ $rec->thumbnail_url }}" alt="{{ $rec->judul }}" class="rec-thumb">
                     @else
                         <div class="rec-thumb-placeholder">🎬</div>
                     @endif

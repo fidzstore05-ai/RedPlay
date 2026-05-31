@@ -95,6 +95,18 @@ td { padding:.9rem 1.2rem; font-size:.88rem; vertical-align:middle; }
         </a>
       </li>
       <li>
+        <a href="{{ route('genres.manage') }}">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+          Genre
+        </a>
+      </li>
+      <li>
+        <a href="{{ route('actors.manage') }}">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          Aktor
+        </a>
+      </li>
+      <li>
         <a href="{{ route('films.index') }}">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
           Lihat Situs
@@ -172,7 +184,7 @@ td { padding:.9rem 1.2rem; font-size:.88rem; vertical-align:middle; }
             <td style="color:rgba(255,255,255,.3);font-size:.8rem;">{{ $film->id_film }}</td>
             <td>
               @if($film->thumbnail)
-                <img src="{{ $film->thumbnail }}" class="td-poster" alt="">
+                <img src="{{ $film->thumbnail_url }}" class="td-poster" alt="">
               @else
                 <div class="td-poster-ph"></div>
               @endif
@@ -193,7 +205,7 @@ td { padding:.9rem 1.2rem; font-size:.88rem; vertical-align:middle; }
             <td class="td-rating">{{ $film->rating ? ' '.$film->rating : '' }}</td>
             <td style="color:rgba(255,255,255,.5);">{{ $film->tahun ? \Carbon\Carbon::parse($film->tahun)->year : '' }}</td>
             <td>
-             <div class="action-btns">
+              <div class="action-btns">
                 <a href="{{ route('films.edit', $film->id_film) }}" class="btn-edit" style="text-decoration:none; display:inline-block;"> Edit</a>
                 <form action="{{ route('films.destroy', $film->id_film) }}" method="POST" onsubmit="return confirm('Hapus film ini?')">
                   @csrf @method('DELETE')
@@ -223,7 +235,7 @@ td { padding:.9rem 1.2rem; font-size:.88rem; vertical-align:middle; }
       <button class="modal-close" onclick="closeModal('addModal')"></button>
     </div>
     <div class="modal-body">
-      <form action="{{ route('films.store') }}" method="POST">
+      <form action="{{ route('films.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="form-row">
           <div class="form-group" style="grid-column:1/-1">
@@ -242,12 +254,14 @@ td { padding:.9rem 1.2rem; font-size:.88rem; vertical-align:middle; }
           </div>
         </div>
         <div class="form-group">
-          <label>Thumbnail URL</label>
-          <input type="text" name="thumbnail" placeholder="https://...">
+          <label>Thumbnail URL atau File</label>
+          <input type="text" name="thumbnail" placeholder="https://..." style="margin-bottom:0.5rem">
+          <input type="file" name="thumbnail_file" accept="image/*" style="background:transparent; padding:0; border:none; color:rgba(255,255,255,0.5)">
         </div>
         <div class="form-group">
-          <label>Video URL (YouTube / Drive / MP4)</label>
-          <input type="text" name="video" placeholder="https://...">
+          <label>Video URL atau File (MP4, MKV)</label>
+          <input type="text" name="video" placeholder="https://..." style="margin-bottom:0.5rem">
+          <input type="file" name="video_file" accept="video/*" style="background:transparent; padding:0; border:none; color:rgba(255,255,255,0.5)">
         </div>
         <div class="form-group">
           <label>Subtitle URL</label>
@@ -288,84 +302,7 @@ td { padding:.9rem 1.2rem; font-size:.88rem; vertical-align:middle; }
   </div>
 </div>
 
-{{-- ===== EDIT MODALS ===== --}}
-@foreach($films as $film)
-<div class="modal-bg" id="editModal_{{ $film->id_film }}">
-  <div class="modal">
-    <div class="modal-header">
-      <h2> Edit Film</h2>
-      <button class="modal-close" onclick="closeModal('editModal_{{ $film->id_film }}')"></button>
-    </div>
-    <div class="modal-body">
-      <form action="{{ route('films.update', $film->id_film) }}" method="POST">
-        @csrf @method('PUT')
-        <div class="form-row">
-          <div class="form-group" style="grid-column:1/-1">
-            <label>Judul Film *</label>
-            <input type="text" name="judul" required value="{{ $film->judul }}">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Tahun Rilis</label>
-            <input type="date" name="tahun" value="{{ $film->tahun }}">
-          </div>
-          <div class="form-group">
-            <label>Rating (010)</label>
-            <input type="number" name="rating" step="0.1" min="0" max="10" value="{{ $film->rating }}">
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Thumbnail URL</label>
-          <input type="text" name="thumbnail" value="{{ $film->thumbnail }}">
-        </div>
-        <div class="form-group">
-          <label>Video URL</label>
-          <input type="text" name="video" value="{{ $film->video }}">
-        </div>
-        <div class="form-group">
-          <label>Subtitle URL</label>
-          <input type="text" name="subtitle" value="{{ $film->subtitle }}">
-        </div>
-        <div class="form-group">
-          <label>Deskripsi</label>
-          <textarea name="deskripsi">{{ $film->deskripsi }}</textarea>
-        </div>
-        <div class="form-group">
-          <label>Genre</label>
-          <div class="checkbox-grid">
-            @php $filmGenreIds = $film->genres->pluck('id_genre')->toArray(); @endphp
-            @foreach($genres as $g)
-              <div class="checkbox-item">
-                <input type="checkbox" name="genres[]" value="{{ $g->id_genre }}" id="eg_{{ $film->id_film }}_{{ $g->id_genre }}"
-                  {{ in_array($g->id_genre, $filmGenreIds) ? 'checked' : '' }}>
-                <label for="eg_{{ $film->id_film }}_{{ $g->id_genre }}">{{ $g->genre }}</label>
-              </div>
-            @endforeach
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Aktor</label>
-          <div class="checkbox-grid">
-            @php $filmActorIds = $film->actors->pluck('id_aktor')->toArray(); @endphp
-            @foreach($actors as $a)
-              <div class="checkbox-item">
-                <input type="checkbox" name="actors[]" value="{{ $a->id_aktor }}" id="ea_{{ $film->id_film }}_{{ $a->id_aktor }}"
-                  {{ in_array($a->id_aktor, $filmActorIds) ? 'checked' : '' }}>
-                <label for="ea_{{ $film->id_film }}_{{ $a->id_aktor }}">{{ $a->namaaktor }}</label>
-              </div>
-            @endforeach
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-cancel" onclick="closeModal('editModal_{{ $film->id_film }}')">Batal</button>
-          <button type="submit" class="btn-save"> Update Film</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-@endforeach
+
 
 @endsection
 
@@ -379,9 +316,7 @@ function closeModal(id) {
   document.getElementById(id).classList.remove('open');
   document.body.style.overflow = '';
 }
-function openEdit(id) {
-  openModal('editModal_' + id);
-}
+
 // Close on backdrop click
 document.querySelectorAll('.modal-bg').forEach(function(bg) {
   bg.addEventListener('click', function(e) {
