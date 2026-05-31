@@ -28,6 +28,22 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/films/{id}', [FilmController::class, 'destroy'])->name('films.destroy');
     Route::put('/films/{id}', [FilmController::class, 'update'])->name('films.update');
 
+    // Genres
+    Route::get('/genres/manage', [\App\Http\Controllers\GenreController::class, 'manage'])->name('genres.manage');
+    Route::get('/genres/create', [\App\Http\Controllers\GenreController::class, 'create'])->name('genres.create');
+    Route::post('/genres/store', [\App\Http\Controllers\GenreController::class, 'store'])->name('genres.store');
+    Route::get('/genres/{id}/edit', [\App\Http\Controllers\GenreController::class, 'edit'])->name('genres.edit');
+    Route::put('/genres/{id}', [\App\Http\Controllers\GenreController::class, 'update'])->name('genres.update');
+    Route::delete('/genres/{id}', [\App\Http\Controllers\GenreController::class, 'destroy'])->name('genres.destroy');
+
+    // Actors
+    Route::get('/actors/manage', [\App\Http\Controllers\ActorController::class, 'manage'])->name('actors.manage');
+    Route::get('/actors/create', [\App\Http\Controllers\ActorController::class, 'create'])->name('actors.create');
+    Route::post('/actors/store', [\App\Http\Controllers\ActorController::class, 'store'])->name('actors.store');
+    Route::get('/actors/{id}/edit', [\App\Http\Controllers\ActorController::class, 'edit'])->name('actors.edit');
+    Route::put('/actors/{id}', [\App\Http\Controllers\ActorController::class, 'update'])->name('actors.update');
+    Route::delete('/actors/{id}', [\App\Http\Controllers\ActorController::class, 'destroy'])->name('actors.destroy');
+
     // Comments
     Route::post('/films/{id}/comments', [\App\Http\Controllers\CommentController::class, 'store'])->name('comments.store');
     Route::delete('/comments/{id}', [\App\Http\Controllers\CommentController::class, 'destroy'])->name('comments.destroy');
