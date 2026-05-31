@@ -4,62 +4,84 @@ namespace App\Http\Controllers;
 
 use App\Models\Actor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ActorController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * ADMIN: Manage actors list
      */
-    public function index()
+    public function manage(Request $request)
     {
-        //
+        if (!Auth::check() || Auth::user()->role !== 'admin') {
+            return redirect('/')->with('error', 'Akses ditolak.');
+        }
+
+        $actors = Actor::withCount('films')->orderBy('namaaktor')->paginate(15);
+        return view('actor.manage', compact('actors'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * ADMIN: Show create actor form
      */
     public function create()
     {
-        //
+        if (!Auth::check() || Auth::user()->role !== 'admin') abort(403);
+        return view('actor.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * ADMIN: Store new actor
      */
     public function store(Request $request)
     {
-        //
+        if (!Auth::check() || Auth::user()->role !== 'admin') abort(403);
+
+        $data = $request->validate([
+            'namaaktor' => 'required|string|max:255|unique:actors,namaaktor',
+        ]);
+
+        Actor::create($data);
+
+        return redirect()->route('actors.manage')->with('success', 'Aktor berhasil ditambahkan.');
     }
 
     /**
-     * Display the specified resource.
+     * ADMIN: Show edit actor form
      */
-    public function show(Actor $actor)
+    public function edit($id)
     {
-        //
+        if (!Auth::check() || Auth::user()->role !== 'admin') abort(403);
+
+        $actor = Actor::findOrFail($id);
+        return view('actor.edit', compact('actor'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * ADMIN: Update actor
      */
-    public function edit(Actor $actor)
+    public function update(Request $request, $id)
     {
-        //
+        if (!Auth::check() || Auth::user()->role !== 'admin') abort(403);
+
+        $actor = Actor::findOrFail($id);
+        $data = $request->validate([
+            'namaaktor' => 'required|string|max:255|unique:actors,namaaktor,' . $id . ',id_aktor',
+        ]);
+
+        $actor->update($data);
+
+        return redirect()->route('actors.manage')->with('success', 'Aktor berhasil diupdate.');
     }
 
     /**
-     * Update the specified resource in storage.
+     * ADMIN: Delete actor
      */
-    public function update(Request $request, Actor $actor)
+    public function destroy($id)
     {
-        //
-    }
+        if (!Auth::check() || Auth::user()->role !== 'admin') abort(403);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Actor $actor)
-    {
-        //
+        Actor::destroy($id);
+        return redirect()->route('actors.manage')->with('success', 'Aktor berhasil dihapus.');
     }
 }
