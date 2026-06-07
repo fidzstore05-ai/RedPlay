@@ -16,7 +16,7 @@
            class="featured-card"
            style="animation-delay: {{ $idx * 0.1 }}s">
             @if($film->thumbnail)
-                <img src="{{ $film->thumbnail }}" alt="{{ $film->judul }}" class="featured-card-img">
+                <img src="{{ $film->thumbnail_url }}" alt="{{ $film->judul }}" class="featured-card-img">
             @else
                 <div class="featured-card-placeholder">🎬</div>
             @endif

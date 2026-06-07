@@ -5,7 +5,7 @@
     {{-- Ambient blurred background --}}
     <div class="hero-ambient" id="hero-ambient"
         @if($heroFilms->first()->thumbnail)
-            style="background-image: url('{{ $heroFilms->first()->thumbnail }}')"
+            style="background-image: url('{{ $heroFilms->first()->thumbnail_url }}')"
         @endif
     ></div>
 
@@ -22,10 +22,10 @@
             {{-- Poster (kanan) --}}
             <div class="hero-poster-wrap">
                 @if($hFilm->thumbnail)
-                    <img src="{{ $hFilm->thumbnail }}"
+                    <img src="{{ $hFilm->thumbnail_url }}"
                          alt="{{ $hFilm->judul }}"
                          class="hero-poster-img"
-                         data-thumb="{{ $hFilm->thumbnail }}">
+                         data-thumb="{{ $hFilm->thumbnail_url }}">
                 @else
                     <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:8rem;background:linear-gradient(135deg,#1a1a2e,#0f3460);">🎬</div>
                 @endif
@@ -75,7 +75,7 @@
         @foreach($heroFilms as $i => $hFilm)
             <button class="hero-dot {{ $i === 0 ? 'active' : '' }}"
                     data-slide="{{ $i }}"
-                    data-thumb="{{ $hFilm->thumbnail }}"></button>
+                    data-thumb="{{ $hFilm->thumbnail_url }}"></button>
         @endforeach
     </div>
 

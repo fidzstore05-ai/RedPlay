@@ -15,7 +15,7 @@
         <div class="film-scroll-card">
             <a href="{{ route('films.show', $film->id_film) }}">
                 @if($film->thumbnail)
-                    <img src="{{ $film->thumbnail }}"
+                    <img src="{{ $film->thumbnail_url }}"
                          alt="{{ $film->judul }}"
                          class="film-poster"
                          style="aspect-ratio:2/3; object-fit:cover; width:100%; display:block;">
