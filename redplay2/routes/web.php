@@ -50,4 +50,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Comment Likes
     Route::post('/comments/{id}/like', [\App\Http\Controllers\CommentLikeController::class, 'toggle'])->name('comments.like');
+
+    // Profile Edit & Update
+    Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
 });
