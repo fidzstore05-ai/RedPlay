@@ -195,6 +195,10 @@
             gap: 0.8rem;
         }
 
+        .nav-user:hover .nav-user-name {
+            color: var(--primary) !important;
+        }
+
         .nav-user-avatar {
             width: 32px;
             height: 32px;
@@ -207,6 +211,7 @@
             font-weight: 700;
             color: white;
             flex-shrink: 0;
+            overflow: hidden;
         }
 
         .nav-user-name {
@@ -216,6 +221,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            transition: color 0.2s;
         }
 
         .btn {
@@ -393,10 +399,16 @@
         {{-- Auth --}}
         <div class="nav-auth">
             @auth
-                <div class="nav-user">
-                    <div class="nav-user-avatar">{{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}</div>
+               <a href="{{ route('profile.edit') }}" class="nav-user" title="Edit Profil">
+                    <div class="nav-user-avatar">
+                        @if(Auth::user()->foto_profile)
+                            <img src="{{ asset(Auth::user()->foto_profile) }}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                        @else
+                            {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
+                        @endif
+                    </div>
                     <span class="nav-user-name">{{ Auth::user()->nama }}</span>
-                </div>
+                </a>
                 <form action="{{ route('logout') }}" method="POST" style="display:inline">
                     @csrf
                     <button type="submit" class="btn btn-outline">Logout</button>
