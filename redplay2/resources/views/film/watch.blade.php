@@ -16,7 +16,14 @@
         border-radius: 14px;
         overflow: hidden;
         position: relative;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+        border: 1px solid rgba(229, 9, 20, 0.25);
+        box-shadow: 0 0 30px rgba(229, 9, 20, 0.15), 0 20px 60px rgba(0,0,0,0.7);
+        transition: all 0.3s ease;
+    }
+
+    .player-wrap:hover {
+        border-color: rgba(229, 9, 20, 0.45);
+        box-shadow: 0 0 40px rgba(229, 9, 20, 0.25), 0 20px 60px rgba(0,0,0,0.85);
     }
 
     .player-wrap video,
@@ -232,45 +239,70 @@
 
     .comment-login-prompt a { color: #e50914; }
 
-    .comment-list { display: flex; flex-direction: column; gap: 1rem; }
+    .comment-list { display: flex; flex-direction: column; gap: 1.2rem; }
 
     .comment-item {
-        background: rgba(31,31,31,0.6);
-        border: 1px solid rgba(255,255,255,0.06);
-        border-radius: 10px;
-        padding: 1rem 1.2rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 18px;
+        padding: 1.2rem 1.4rem;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        position: relative;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .comment-item:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    }
+
+    .comment-item.admin-comment {
+        background: rgba(229, 9, 20, 0.03);
+        border-color: rgba(229, 9, 20, 0.2);
+    }
+
+    .comment-item.admin-comment:hover {
+        background: rgba(229, 9, 20, 0.06);
+        border-color: rgba(229, 9, 20, 0.35);
+        box-shadow: 0 10px 25px rgba(229, 9, 20, 0.08);
     }
 
     .comment-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.7rem;
     }
 
     .comment-author {
         display: flex;
         align-items: center;
-        gap: 0.6rem;
+        gap: 0.8rem;
     }
 
     .comment-avatar {
-        width: 32px;
-        height: 32px;
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
         background: linear-gradient(135deg, #e50914, #ff6b6b);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.8rem;
+        font-size: 0.85rem;
         font-weight: 700;
         color: white;
         flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(229, 9, 20, 0.2);
     }
 
     .comment-name {
         font-weight: 600;
-        font-size: 0.88rem;
+        font-size: 0.92rem;
+        color: #fff;
     }
 
     .comment-delete {
@@ -279,8 +311,8 @@
         color: rgba(255,255,255,0.25);
         cursor: pointer;
         font-size: 0.75rem;
-        padding: 0.2rem 0.5rem;
-        border-radius: 4px;
+        padding: 0.35rem 0.65rem;
+        border-radius: 6px;
         transition: all 0.2s;
         font-family: 'Outfit', sans-serif;
     }
@@ -288,21 +320,25 @@
     .comment-delete:hover { color: #e50914; background: rgba(229,9,20,0.1); }
 
     .comment-text {
-        font-size: 0.9rem;
-        color: rgba(255,255,255,0.75);
-        line-height: 1.6;
+        font-size: 0.92rem;
+        color: rgba(255,255,255,0.8);
+        line-height: 1.65;
+        word-break: break-word;
     }
 
     .no-comments {
         text-align: center;
-        padding: 2rem;
+        padding: 3rem;
         color: rgba(255,255,255,0.3);
-        font-size: 0.9rem;
+        font-size: 0.95rem;
+        background: rgba(255, 255, 255, 0.01);
+        border: 1px dashed rgba(255,255,255,0.06);
+        border-radius: 12px;
     }
 
     /* ===== LIKE BUTTON ===== */
     .comment-footer {
-        margin-top: 0.6rem;
+        margin-top: 0.8rem;
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -312,15 +348,15 @@
         display: inline-flex;
         align-items: center;
         gap: 0.4rem;
-        background: none;
-        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.08);
         color: rgba(255,255,255,0.4);
         font-size: 0.78rem;
         font-family: 'Outfit', sans-serif;
-        padding: 0.3rem 0.7rem;
+        padding: 0.35rem 0.8rem;
         border-radius: 20px;
         cursor: pointer;
-        transition: all 0.2s;
+        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s, border-color 0.2s, color 0.2s;
     }
 
     .like-btn:hover {
@@ -446,12 +482,105 @@
 
     .back-btn:hover { color: white; }
 
+    .drive-process-alert {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 12px;
+        padding: 1.2rem;
+        margin: 1.5rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .drive-process-alert .alert-text {
+        font-size: 0.9rem;
+        color: rgba(255,255,255,0.7);
+        max-width: 500px;
+        line-height: 1.5;
+    }
+    .drive-process-alert .btn-drive-action {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.85rem;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.15);
+        color: white;
+        font-weight: 600;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+    .drive-process-alert .btn-drive-action:hover {
+        background: rgba(255,255,255,0.15);
+        border-color: rgba(255,255,255,0.3);
+    }
+
     /* ===== RESPONSIVE ===== */
-    @media (max-width: 900px) {
+    @media (max-width: 1150px) {
         .watch-layout {
             grid-template-columns: 1fr;
         }
-        .sidebar { position: static; }
+        .sidebar { position: static; margin-top: 3rem; }
+        .rec-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+    }
+    @media (max-width: 600px) {
+        main {
+            padding: 1rem 0 !important;
+        }
+        .back-btn {
+            margin-left: 1.2rem;
+        }
+        .film-info-bar, .comments-section, .sidebar {
+            padding: 0 1.2rem;
+        }
+        .player-wrap {
+            border-radius: 0;
+            border-left: none;
+            border-right: none;
+        }
+        .film-info-bar h1 {
+            font-size: 1.4rem;
+        }
+        .comment-item {
+            padding: 0.8rem 1rem;
+        }
+        .comment-header {
+            flex-direction: row !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            width: 100%;
+        }
+        .comment-header form {
+            width: auto;
+        }
+        .comment-delete {
+            padding-left: 0;
+            margin-top: 0;
+        }
+        .drive-process-alert {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1rem;
+        }
+        .drive-process-alert .btn-drive-action {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+    @media (max-width: 480px) {
+        .rec-list {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 @endpush
@@ -535,14 +664,14 @@
             </div>
 
             @if(isset($isDrive) && $isDrive && isset($driveId))
-                <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 1.2rem; margin: 1.5rem 0; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
-                    <div style="font-size: 0.9rem; color: rgba(255,255,255,0.7); max-width: 500px; line-height: 1.5;">
+                <div class="drive-process-alert">
+                    <div class="alert-text">
                         <strong style="color: #f5c518; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; font-size: 0.95rem;">
                             <span>💡</span> Video Sedang Diproses / Belum Bisa Diputar?
                         </strong>
                         Jika Google Drive menampilkan pesan <em>"video is still being processed"</em>, itu berarti server Google sedang melakukan kompresi. Anda tetap bisa langsung menonton atau mendownload file asli lewat tombol di sebelah kanan.
                     </div>
-                    <a href="https://drive.google.com/file/d/{{ $driveId }}/view" target="_blank" style="padding: 0.6rem 1.2rem; font-size: 0.85rem; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.6rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: white; font-weight: 600; transition: all 0.2s; cursor: pointer;" onmouseover="this.style.background='rgba(255,255,255,0.15)'; this.style.borderColor='rgba(255,255,255,0.3)';" onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.borderColor='rgba(255,255,255,0.15)';">
+                    <a href="https://drive.google.com/file/d/{{ $driveId }}/view" target="_blank" class="btn-drive-action">
                         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                         </svg>
@@ -594,13 +723,19 @@
 
             <div class="comment-list">
                 @forelse($film->comments as $comment)
-                    <div class="comment-item" id="comment-{{ $comment->id_comment }}">
+                    @php
+                        $isAdmin = isset($comment->user) && $comment->user->role === 'admin';
+                    @endphp
+                    <div class="comment-item {{ $isAdmin ? 'admin-comment' : '' }}" id="comment-{{ $comment->id_comment }}">
                         <div class="comment-header">
                             <div class="comment-author">
-                                <div class="comment-avatar">
+                                <div class="comment-avatar" style="{{ $isAdmin ? 'background: linear-gradient(135deg, #e50914, #ff3344); box-shadow: 0 0 8px rgba(229, 9, 20, 0.4);' : '' }}">
                                     {{ strtoupper(substr($comment->user->nama ?? 'U', 0, 1)) }}
                                 </div>
                                 <span class="comment-name">{{ $comment->user->nama ?? 'Pengguna' }}</span>
+                                @if($isAdmin)
+                                    <span class="admin-badge" style="background: rgba(229, 9, 20, 0.15); border: 1px solid rgba(229, 9, 20, 0.35); color: #ff5252; font-size: 0.65rem; font-weight: 700; padding: 0.1rem 0.5rem; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;">Admin</span>
+                                @endif
                             </div>
                             @auth
                                 @if(Auth::id() === $comment->user_id_user || Auth::user()->role === 'admin')
