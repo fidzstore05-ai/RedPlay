@@ -25,7 +25,11 @@
 .search-bar-admin input:focus { border-color:rgba(229,9,20,.4); }
 .search-bar-admin button { background:#1a1a1a; border:1px solid rgba(255,255,255,.08); color:rgba(255,255,255,.6); border-radius:9px; padding:.65rem 1.2rem; cursor:pointer; font-family:Outfit,sans-serif; font-size:.85rem; transition:all .2s; }
 .search-bar-admin button:hover { border-color:rgba(229,9,20,.4); color:#fff; }
-.table-wrap { background:#1a1a1a; border:1px solid rgba(255,255,255,.06); border-radius:14px; overflow:hidden; }
+.table-wrap { background:#1a1a1a; border:1px solid rgba(255,255,255,.06); border-radius:14px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.table-wrap::-webkit-scrollbar { height: 6px; }
+.table-wrap::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); border-radius: 0 0 14px 14px; }
+.table-wrap::-webkit-scrollbar-thumb { background: rgba(229, 9, 20, 0.35); border-radius: 3px; }
+.table-wrap::-webkit-scrollbar-thumb:hover { background: rgba(229, 9, 20, 0.6); }
 table { width:100%; border-collapse:collapse; }
 thead tr { background:rgba(255,255,255,.04); }
 th { padding:1rem 1.2rem; font-size:.78rem; text-transform:uppercase; letter-spacing:.5px; color:rgba(255,255,255,.4); font-weight:600; text-align:left; white-space:nowrap; }
@@ -71,7 +75,213 @@ td { padding:.9rem 1.2rem; font-size:.88rem; vertical-align:middle; }
 .btn-save:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(229,9,20,.45); }
 .alert { padding:.8rem 1rem; border-radius:9px; margin-bottom:1.5rem; font-size:.88rem; }
 .alert-success { background:rgba(34,197,94,.12); border:1px solid rgba(34,197,94,.3); color:#86efac; }
-.alert-danger { background:rgba(229,9,20,.12); border:1px solid rgba(229,9,20,.3); color:#ff6b6b; }
+.alert-danger{background:rgba(229,9,20,.12);border:1px solid rgba(229,9,20,.3);color:#ff6b6b;}
+
+/* ===== RESPONSIVE ADMIN DASHBOARD ===== */
+@media (max-width: 768px) {
+    .admin-wrap {
+        grid-template-columns: 1fr;
+        margin: -2rem -5%;
+    }
+    .admin-sidebar {
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        padding: 1rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        background: #0a0a0a;
+    }
+    .sidebar-logo {
+        border-bottom: none;
+        padding: 0;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+    .sidebar-menu {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 0.4rem;
+        padding-bottom: 0.4rem;
+        width: 100%;
+        scrollbar-width: none;
+    }
+    .sidebar-menu::-webkit-scrollbar {
+        display: none;
+    }
+    .sidebar-menu li {
+        display: inline-block;
+        flex-shrink: 0;
+    }
+    .sidebar-menu li a {
+        padding: 0.6rem 0.8rem;
+        border-radius: 8px;
+        font-size: 0.72rem;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        min-width: 65px;
+        text-align: center;
+    }
+    .sidebar-menu li a svg {
+        width: 20px;
+        height: 20px;
+    }
+    .sidebar-menu li a:hover, .sidebar-menu li a.active {
+        border-right: none;
+        background: rgba(229,9,20,0.15);
+    }
+    .admin-main {
+        padding: 1.5rem;
+    }
+    .admin-topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    .admin-topbar .btn-add {
+        width: 100%;
+        justify-content: center;
+    }
+    .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+    }
+    .search-bar-admin {
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+    .search-bar-admin input, .search-bar-admin button {
+        width: 100%;
+    }
+    .checkbox-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .table-wrap {
+        background: transparent;
+        border: none;
+    }
+    .table-wrap table, 
+    .table-wrap table tbody, 
+    .table-wrap table tr, 
+    .table-wrap table td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .table-wrap table thead {
+        display: none;
+    }
+    .table-wrap table tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 0;
+    }
+    .table-wrap table tr {
+        background: #1a1a1a;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 14px;
+        padding: 1rem;
+        display: grid;
+        grid-template-areas: 
+            "poster title"
+            "poster genres"
+            "poster meta"
+            "actions actions";
+        grid-template-columns: 80px 1fr;
+        gap: 0.4rem 1rem;
+    }
+    .col-id {
+        display: none !important;
+    }
+    .col-poster {
+        grid-area: poster;
+        padding: 0 !important;
+    }
+    .col-poster img, .col-poster .td-poster-ph {
+        width: 80px !important;
+        height: 110px !important;
+        border-radius: 8px;
+    }
+    .col-title {
+        grid-area: title;
+        padding: 0 !important;
+        align-self: start;
+    }
+    .col-title .td-title {
+        font-size: 1rem;
+        font-weight: 700;
+        white-space: normal;
+        max-width: 100%;
+        margin-bottom: 0.2rem;
+    }
+    .col-genres {
+        grid-area: genres;
+        padding: 0 !important;
+    }
+    .col-genres .genre-pill-sm {
+        margin: 0 0.2rem 0.2rem 0;
+    }
+    .col-rating {
+        grid-area: meta;
+        padding: 0 !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.82rem;
+    }
+    .col-rating::before {
+        content: '★ ';
+        color: #f5c518;
+        font-weight: 700;
+    }
+    .col-year {
+        display: inline-block !important;
+        padding: 0 !important;
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.4);
+    }
+    .col-actions {
+        grid-area: actions;
+        padding: 0.75rem 0 0 0 !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        margin-top: 0.4rem;
+    }
+    .col-actions .action-btns {
+        display: flex;
+        gap: 0.5rem;
+    }
+    .col-actions .action-btns a, 
+    .col-actions .action-btns form {
+        flex: 1;
+    }
+    .col-actions .action-btns button,
+    .col-actions .action-btns a {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-row {
+        grid-template-columns: 1fr;
+    }
+    .checkbox-grid {
+        grid-template-columns: 1fr;
+    }
+}
 </style>
 @endpush
 
@@ -181,15 +391,15 @@ td { padding:.9rem 1.2rem; font-size:.88rem; vertical-align:middle; }
         <tbody>
           @forelse($films as $film)
           <tr>
-            <td style="color:rgba(255,255,255,.3);font-size:.8rem;">{{ $film->id_film }}</td>
-            <td>
+            <td class="col-id" style="color:rgba(255,255,255,.3);font-size:.8rem;">{{ $film->id_film }}</td>
+            <td class="col-poster">
               @if($film->thumbnail)
                 <img src="{{ $film->thumbnail_url }}" class="td-poster" alt="">
               @else
                 <div class="td-poster-ph"></div>
               @endif
             </td>
-            <td>
+            <td class="col-title">
               <div class="td-title">{{ $film->judul }}</div>
               @if($film->video)
                 <span style="font-size:.7rem;color:#4ade80;"> Video</span>
@@ -197,14 +407,14 @@ td { padding:.9rem 1.2rem; font-size:.88rem; vertical-align:middle; }
                 <span style="font-size:.7rem;color:rgba(255,255,255,.2);"> No video</span>
               @endif
             </td>
-            <td>
+            <td class="col-genres">
               @foreach($film->genres->take(3) as $g)
                 <span class="genre-pill-sm">{{ $g->genre }}</span>
               @endforeach
             </td>
-            <td class="td-rating">{{ $film->rating ? ' '.$film->rating : '' }}</td>
-            <td style="color:rgba(255,255,255,.5);">{{ $film->tahun ? \Carbon\Carbon::parse($film->tahun)->year : '' }}</td>
-            <td>
+            <td class="col-rating td-rating">{{ $film->rating ? ' '.$film->rating : '' }}</td>
+            <td class="col-year" style="color:rgba(255,255,255,.5);">{{ $film->tahun ? \Carbon\Carbon::parse($film->tahun)->year : '' }}</td>
+            <td class="col-actions">
               <div class="action-btns">
                 <a href="{{ route('films.edit', $film->id_film) }}" class="btn-edit" style="text-decoration:none; display:inline-block;"> Edit</a>
                 <form action="{{ route('films.destroy', $film->id_film) }}" method="POST" onsubmit="return confirm('Hapus film ini?')">

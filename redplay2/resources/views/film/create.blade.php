@@ -74,7 +74,68 @@
 .video-preview-placeholder .vp-icon{font-size:3rem;opacity:.2}
 .alert{padding:.8rem 1rem;border-radius:9px;margin-bottom:1.5rem;font-size:.88rem}
 .alert-danger{background:rgba(229,9,20,.12);border:1px solid rgba(229,9,20,.3);color:#ff6b6b}
-@media(max-width:900px){.create-wrap{grid-template-columns:1fr}}
+.form-preview-tabs {
+    display: none;
+}
+
+@media (max-width: 900px) {
+    .form-preview-tabs {
+        display: flex;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 10px;
+        padding: 0.3rem;
+        gap: 0.3rem;
+        margin-bottom: 1.5rem;
+        position: sticky;
+        top: 72px;
+        z-index: 100;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+    .tab-btn {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: rgba(255, 255, 255, 0.5);
+        padding: 0.65rem;
+        font-size: 0.88rem;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: 'Outfit', sans-serif;
+        transition: all 0.2s;
+    }
+    .tab-btn.active {
+        background: #e50914;
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(229, 9, 20, 0.3);
+    }
+    
+    .create-wrap {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Hide the second column (preview panel) on mobile by default */
+    .create-wrap > div:last-child {
+        display: none;
+    }
+    
+    /* Show preview / hide form when active */
+    .create-wrap.show-preview > div:first-child {
+        display: none;
+    }
+    .create-wrap.show-preview > div:last-child {
+        display: block;
+    }
+}
+
+@media (max-width: 600px) {
+    .form-row-2 {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+}
 </style>
 @endpush
 
@@ -91,6 +152,11 @@
     @foreach($errors->all() as $e) <div>{{ $e }}</div> @endforeach
   </div>
 @endif
+
+<div class="form-preview-tabs">
+  <button type="button" class="tab-btn active" id="tabFormBtn" onclick="switchTab('form')">Formulir</button>
+  <button type="button" class="tab-btn" id="tabPreviewBtn" onclick="switchTab('preview')">Live Preview</button>
+</div>
 
 <div class="create-wrap">
 
@@ -551,5 +617,20 @@ document.addEventListener('click', function(e) {
   if (!e.target.closest('#actorTagsInput') && !e.target.closest('#actorDropdown'))
     document.getElementById('actorDropdown').classList.remove('open');
 });
+
+function switchTab(tab) {
+  const wrap = document.querySelector('.create-wrap');
+  const btnForm = document.getElementById('tabFormBtn');
+  const btnPrev = document.getElementById('tabPreviewBtn');
+  if (tab === 'preview') {
+    wrap.classList.add('show-preview');
+    btnPrev.classList.add('active');
+    btnForm.classList.remove('active');
+  } else {
+    wrap.classList.remove('show-preview');
+    btnForm.classList.add('active');
+    btnPrev.classList.remove('active');
+  }
+}
 </script>
 @endpush

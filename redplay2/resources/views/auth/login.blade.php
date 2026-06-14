@@ -305,10 +305,10 @@
         <h1>Login</h1>
         <p class="subtitle">Masuk untuk melanjutkan menonton</p>
 
-        {{-- Admin hint --}}
+        <!-- {{-- Admin hint --}}
         <div style="background:rgba(229,9,20,0.08);border:1px solid rgba(229,9,20,0.2);border-radius:10px;padding:.7rem 1rem;margin-bottom:1.5rem;font-size:.8rem;color:rgba(255,255,255,.5);text-align:center;">
             🔐 Admin: <span style="color:#ff6b6b;font-weight:600;">admin@filmapp.com</span> / <span style="color:#ff6b6b;font-weight:600;">admin123</span>
-        </div>
+        </div> -->
 
         @if ($errors->any())
             <div class="alert alert-danger">

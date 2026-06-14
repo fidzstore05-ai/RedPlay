@@ -16,7 +16,11 @@
 .admin-topbar h1 { font-size:1.5rem; font-weight:700; }
 .btn-add { display:inline-flex; align-items:center; gap:.5rem; background:linear-gradient(135deg,#e50914,#c8000f); color:#fff; border:none; padding:.65rem 1.3rem; border-radius:9px; font-weight:600; font-size:.88rem; cursor:pointer; font-family:Outfit,sans-serif; transition:all .2s; box-shadow:0 4px 15px rgba(229,9,20,.3); text-decoration: none; }
 .btn-add:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(229,9,20,.45); }
-.table-wrap { background:#1a1a1a; border:1px solid rgba(255,255,255,.06); border-radius:14px; overflow:hidden; }
+.table-wrap { background:#1a1a1a; border:1px solid rgba(255,255,255,.06); border-radius:14px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.table-wrap::-webkit-scrollbar { height: 6px; }
+.table-wrap::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); border-radius: 0 0 14px 14px; }
+.table-wrap::-webkit-scrollbar-thumb { background: rgba(229, 9, 20, 0.35); border-radius: 3px; }
+.table-wrap::-webkit-scrollbar-thumb:hover { background: rgba(229, 9, 20, 0.6); }
 table { width:100%; border-collapse:collapse; }
 thead tr { background:rgba(255,255,255,.04); }
 th { padding:1rem 1.2rem; font-size:.78rem; text-transform:uppercase; letter-spacing:.5px; color:rgba(255,255,255,.4); font-weight:600; text-align:left; white-space:nowrap; }
@@ -32,6 +36,143 @@ td { padding:.9rem 1.2rem; font-size:.88rem; vertical-align:middle; color:#fff; 
 .alert { padding:.8rem 1rem; border-radius:9px; margin-bottom:1.5rem; font-size:.88rem; }
 .alert-success { background:rgba(34,197,94,.12); border:1px solid rgba(34,197,94,.3); color:#86efac; }
 .alert-danger { background:rgba(229,9,20,.12); border:1px solid rgba(229,9,20,.3); color:#ff6b6b; }
+
+/* ===== RESPONSIVE ADMIN DASHBOARD ===== */
+@media (max-width: 768px) {
+    .admin-wrap {
+        grid-template-columns: 1fr;
+        margin: -2rem -5%;
+    }
+    .admin-sidebar {
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        padding: 1rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        background: #0a0a0a;
+    }
+    .sidebar-logo {
+        border-bottom: none;
+        padding: 0;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+    .sidebar-menu {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 0.4rem;
+        padding-bottom: 0.4rem;
+        width: 100%;
+        scrollbar-width: none;
+    }
+    .sidebar-menu::-webkit-scrollbar {
+        display: none;
+    }
+    .sidebar-menu li {
+        display: inline-block;
+        flex-shrink: 0;
+    }
+    .sidebar-menu li a {
+        padding: 0.6rem 0.8rem;
+        border-radius: 8px;
+        font-size: 0.72rem;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        min-width: 65px;
+        text-align: center;
+    }
+    .sidebar-menu li a svg {
+        width: 20px;
+        height: 20px;
+    }
+    .sidebar-menu li a:hover, .sidebar-menu li a.active {
+        border-right: none;
+        background: rgba(229,9,20,0.15);
+    }
+    .admin-main {
+        padding: 1.5rem;
+    }
+    .admin-topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    .admin-topbar .btn-add {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .table-wrap {
+        background: transparent;
+        border: none;
+    }
+    .table-wrap table, 
+    .table-wrap table tbody, 
+    .table-wrap table tr, 
+    .table-wrap table td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .table-wrap table thead {
+        display: none;
+    }
+    .table-wrap table tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 0;
+    }
+    .table-wrap table tr {
+        background: #1a1a1a;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 14px;
+        padding: 1.2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+    .col-id {
+        display: none !important;
+    }
+    .col-name {
+        padding: 0 !important;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #fff;
+    }
+    .col-count {
+        padding: 0 !important;
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.5);
+    }
+    .col-actions {
+        padding: 0.75rem 0 0 0 !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        margin-top: 0.4rem;
+    }
+    .col-actions .action-btns {
+        display: flex;
+        gap: 0.5rem;
+    }
+    .col-actions .action-btns a, 
+    .col-actions .action-btns form {
+        flex: 1;
+    }
+    .col-actions .action-btns button,
+    .col-actions .action-btns a {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+    }
+}
 </style>
 @endpush
 
@@ -106,10 +247,10 @@ td { padding:.9rem 1.2rem; font-size:.88rem; vertical-align:middle; color:#fff; 
         <tbody>
           @forelse($actors as $a)
           <tr>
-            <td style="color:rgba(255,255,255,.3);font-size:.8rem;">{{ $a->id_aktor }}</td>
-            <td style="font-weight:600;">{{ $a->namaaktor }}</td>
-            <td style="color:rgba(255,255,255,.5);">{{ $a->films_count ?? 0 }} Film</td>
-            <td>
+            <td class="col-id" style="color:rgba(255,255,255,.3);font-size:.8rem;">{{ $a->id_aktor }}</td>
+            <td class="col-name" style="font-weight:600;">{{ $a->namaaktor }}</td>
+            <td class="col-count" style="color:rgba(255,255,255,.5);">{{ $a->films_count ?? 0 }} Film</td>
+            <td class="col-actions">
               <div class="action-btns">
                 <a href="{{ route('actors.edit', $a->id_aktor) }}" class="btn-edit"> Edit</a>
                 <form action="{{ route('actors.destroy', $a->id_aktor) }}" method="POST" onsubmit="return confirm('Hapus aktor ini?')">

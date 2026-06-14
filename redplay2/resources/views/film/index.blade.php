@@ -273,48 +273,52 @@
     .hero-dot {
         width: 8px;
         height: 8px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.3);
+        border-radius: 4px;
+        background: rgba(255,255,255,0.25);
         cursor: pointer;
-        transition: all 0.3s;
+        transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease;
         border: none;
         padding: 0;
     }
 
     .hero-dot.active {
         width: 28px;
-        border-radius: 4px;
         background: #e50914;
+        box-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
     }
 
     /* ===== SEARCH BAR ===== */
     .search-bar-wrapper {
         position: relative;
-        margin: 2.5rem 0 3rem;
+        margin: 2.5rem auto 3rem;
+        max-width: 800px;
         z-index: 5;
     }
 
     .search-bar {
         display: flex;
+        align-items: center;
         gap: 0.8rem;
-        background: rgba(31,31,31,0.9);
-        backdrop-filter: blur(20px);
+        background: rgba(20, 20, 20, 0.6);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
         border: 1px solid rgba(255,255,255,0.08);
-        padding: 0.8rem 1rem;
-        border-radius: 14px;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-        transition: border-color 0.3s;
+        padding: 0.6rem 0.8rem;
+        border-radius: 50px;
+        box-shadow: 0 16px 40px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.1);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .search-bar:focus-within {
-        border-color: rgba(229,9,20,0.5);
-        box-shadow: 0 8px 30px rgba(229,9,20,0.15);
+        border-color: rgba(229,9,20,0.6);
+        box-shadow: 0 16px 40px rgba(229,9,20,0.15), 0 0 0 3px rgba(229,9,20,0.08);
+        background: rgba(25, 20, 20, 0.8);
     }
 
     .search-bar .search-icon {
         display: flex;
         align-items: center;
-        padding: 0 0.5rem;
+        padding: 0 0.2rem 0 0.8rem;
         color: var(--gray);
     }
 
@@ -323,38 +327,40 @@
         background: transparent;
         border: none;
         color: white;
-        font-size: 0.95rem;
+        font-size: 0.92rem;
         font-family: 'Outfit', sans-serif;
         outline: none;
-        padding: 0.3rem 0;
+        padding: 0.5rem;
     }
 
     .search-bar input::placeholder { color: #555; }
 
     .search-bar select {
         flex: 1;
-        background: rgba(255,255,255,0.06);
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 8px;
-        color: white;
-        font-size: 0.85rem;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 30px;
+        color: rgba(255,255,255,0.8);
+        font-size: 0.82rem;
         font-family: 'Outfit', sans-serif;
-        padding: 0.4rem 0.8rem;
-        min-width: 120px;
+        padding: 0.5rem 1rem;
+        min-width: 130px;
         cursor: pointer;
+        outline: none;
+        transition: all 0.2s;
     }
 
     .search-bar select option { background: #1f1f1f; color: white; }
 
     .btn-search {
-        background: linear-gradient(135deg, #e50914, #c8000f);
+        background: linear-gradient(135deg, #e50914, #ff3344);
         color: white;
         border: none;
-        padding: 0.7rem 1.5rem;
-        border-radius: 8px;
+        padding: 0.6rem 1.8rem;
+        border-radius: 30px;
         font-weight: 600;
         font-family: 'Outfit', sans-serif;
-        font-size: 0.9rem;
+        font-size: 0.88rem;
         cursor: pointer;
         transition: all 0.3s;
         white-space: nowrap;
@@ -412,17 +418,20 @@
     }
 
     .film-card {
-        border-radius: 10px;
+        border-radius: 12px;
         overflow: hidden;
-        background: #181818;
-        transition: transform 0.3s, box-shadow 0.3s;
+        background: rgba(20, 20, 20, 0.4);
+        border: 1px solid rgba(255,255,255,0.03);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
         cursor: pointer;
         position: relative;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.3);
     }
 
     .film-card:hover {
-        transform: translateY(-6px) scale(1.03);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 15px rgba(229,9,20,0.15);
+        border-color: rgba(229,9,20,0.3);
         z-index: 2;
     }
 
@@ -540,16 +549,20 @@
         position: absolute;
         top: 0.6rem;
         right: 0.6rem;
-        background: rgba(0,0,0,0.75);
-        backdrop-filter: blur(5px);
-        border-radius: 5px;
-        padding: 0.2rem 0.5rem;
+        background: rgba(15, 15, 15, 0.6);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 6px;
+        padding: 0.25rem 0.55rem;
         font-size: 0.72rem;
         font-weight: 700;
         color: #f5c518;
         display: flex;
         align-items: center;
-        gap: 0.2rem;
+        gap: 0.25rem;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        z-index: 3;
     }
 
     /* ===== GENRE SECTION ===== */
@@ -897,6 +910,156 @@
     .film-card:nth-child(4) { animation-delay: 0.20s; }
     .film-card:nth-child(5) { animation-delay: 0.25s; }
     .film-card:nth-child(6) { animation-delay: 0.30s; }
+
+
+    /* ===== RESPONSIVE WEB DESIGN FOR INDEX PAGE ===== */
+    @media (max-width: 900px) {
+        .hero {
+            height: 65vh;
+            min-height: 420px;
+            margin-top: 0;
+        }
+        .hero-poster-wrap {
+            width: 100%;
+            opacity: 0.25;
+        }
+        .hero-poster-fade {
+            background: linear-gradient(to top, #0a0a0a 0%, rgba(10,10,10,0.5) 100%);
+        }
+        .hero-content {
+            width: 100%;
+            max-width: 100%;
+            padding: 2rem 5%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-title {
+            font-size: 2.2rem !important;
+        }
+        .hero-desc {
+            font-size: 0.85rem !important;
+            margin-bottom: 1.2rem !important;
+            -webkit-line-clamp: 2 !important;
+        }
+        .hero-badge {
+            font-size: 0.7rem !important;
+            padding: 0.2rem 0.6rem !important;
+            margin-bottom: 0.6rem !important;
+        }
+        .hero-meta {
+            justify-content: center;
+        }
+        .hero-genres {
+            justify-content: center;
+        }
+        .hero-actions {
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 768px) {
+        /* Convert featured row (Latest films) to scroll row on mobile/tablets */
+        .featured-row {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            gap: 1rem;
+            padding-bottom: 0.8rem;
+            scrollbar-width: thin;
+            scrollbar-color: #333 transparent;
+            margin: 0;
+            grid-template-columns: none; /* disable grid */
+        }
+        .featured-row::-webkit-scrollbar { height: 4px; }
+        .featured-row::-webkit-scrollbar-track { background: transparent; }
+        .featured-row::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+        
+        .featured-card {
+            flex: 0 0 280px; /* fixed width for horizontal swipe cards */
+            margin-bottom: 0;
+        }
+
+        .stats-bar {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(31, 31, 31, 0.4);
+        }
+        .stat-item {
+            border-right: none;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            padding: 1rem 0.5rem;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .search-bar {
+            flex-direction: column;
+            gap: 0.6rem;
+            padding: 1rem;
+        }
+        .search-bar select {
+            width: 100%;
+            padding: 0.75rem 1rem !important;
+            background: rgba(255,255,255,0.05) !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            border-radius: 8px !important;
+        }
+        .btn-search {
+            width: 100%;
+            padding: 0.8rem 1.5rem !important;
+            border-radius: 8px !important;
+            font-size: 0.95rem !important;
+        }
+        .results-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .film-row {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 0.8rem;
+        }
+        .film-card-title {
+            font-size: 0.8rem !important;
+        }
+        .film-card-info {
+            padding: 0.6rem !important;
+        }
+        .rating-badge {
+            font-size: 0.68rem !important;
+            padding: 0.15rem 0.4rem !important;
+        }
+        .genre-row {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+        }
+        .stats-bar {
+            grid-template-columns: repeat(2, 1fr); /* Keep compact 2-columns */
+            gap: 0.6rem;
+        }
+        .stat-number {
+            font-size: 1.5rem;
+        }
+        .stat-label {
+            font-size: 0.7rem;
+        }
+        .top10-row {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .top10-number {
+            font-size: 4.5rem;
+            bottom: 60px;
+        }
+    }
 
 </style>
 @endpush
